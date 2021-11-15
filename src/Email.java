@@ -1,47 +1,70 @@
+import java.util.Locale;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Email {
     private String firstName;
     private String lastName;
+    private String password;
     private String department;
+    private String email;
+    private int mailboxCapacity = 500;
+    private String alternateEmail;
+    private String companySuffix = "aeycompany.com";
+    private int defaultPasswordLength = 10;
 
+    //constructor for firstname and last name, dept, password
     public Email(String firstName, String lastName){
         this.firstName = firstName;
         this.lastName = lastName;
-    }
 
-    public Email(String firstName, String lastName, String department) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.department = department;
-    }
+        //call a method asking for department - return the dept
+        this.department = setDepartment();
 
-    public String getFirstName() {
-        return firstName;
-    }
+        //call a method that sets a password
+        this.password = randomPassword(defaultPasswordLength);
+        System.out.println("Your password is " + this.password);
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    //method to create the email firstname.lastname@department.company.com
-    public static String generateEmailAddress(Email object){
-        String emailAdd = (object.getFirstName() + "." + object.getLastName() + "@" + object.getDepartment() + ".gingerVette.com");
-        return emailAdd;
+        //combine elements to generate email
+        email = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@" + department + "." + companySuffix;
 
     }
 
-    public static void generatePassword(){
-        System.out.println("Your password is:");
-        generatingRandomAlphaString();
+    private String setDepartment(){
+        System.out.println("Department Codes:\n1 for Sales\n2 for Development\n3 for Accounting\n0 for none\nEnter the department code:");
+        Scanner in = new Scanner(System.in);
+        int depChoice = in.nextInt();
+        if(depChoice == 1){
+            return "sales";
+        } else if(depChoice == 2){
+            return "development";
+        } else if(depChoice == 3){
+            return "accounting";
+        } else {
+            return "none";
+        }
     }
+
+
+    //set the mailbox capacity
+    public void setMailboxCapacity(int capacity){
+        this.mailboxCapacity = capacity;
+    }
+
+    //set the alternate email
+    public void setAlternateEmail(String altEmail){
+        this.alternateEmail = altEmail;
+    }
+
+
+    //methods to generate a password
+//    public void generatePassword(){
+//        System.out.println("Your password is:");
+//        generatingRandomAlphaString();
+//    }
 
     //generate a random String, code from Baeldung
-    public static void generatingRandomAlphaString() {
+    private String generatingRandomAlphaString() {
         int leftLimit = 97;    // letter 'a'
         int rightLimit = 122;    // letter 'z'
         int targetStringLength = 10;
@@ -52,15 +75,45 @@ public class Email {
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
 
-        System.out.println(generatedString);
+        return generatedString;
     }
 
-    public static void main(String[] args) {
-        Email object1 = new Email("mary", "white", "accounting");
-
-        System.out.println(generateEmailAddress(object1));
-        generatePassword();
+    //code from the tutorial for password
+    private String randomPassword(int length){
+        String passwordSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@$%&";
+        char[] password = new char[length];
+        for (int i = 0; i < length; i++) {
+            int rand = (int) (Math.random() * passwordSet.length());
+            password[i] = passwordSet.charAt(rand);
+        }
+        return new String(password);
     }
+
+    //change password
+    public void changePassword(String password){
+        this.password = password;
+    }
+
+    //get mailbox capacity
+    public int getMailboxCapacity(){
+        return mailboxCapacity;
+    }
+
+    public String getAlternateEmail(){
+        return alternateEmail;
+    }
+
+    public String getPassword(){
+        return password;
+    }
+
+    //print the information
+    public String showInfo(){
+        return "Display Name: " + firstName + " " + lastName +
+                "\nCompany Email: " + email +
+                "\nMailbox Capacity: " + mailboxCapacity + "mb";
+    }
+
 }
 
 //generate an email firstname.lastname@department.company.com
